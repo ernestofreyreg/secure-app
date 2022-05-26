@@ -7,6 +7,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(250), unique=False, nullable=True)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    games = db.relationship("SoccerGame")
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -32,4 +33,20 @@ class Account(db.Model):
         return {
             'id': self.id,
             'total': self.total
+        }
+
+
+class SoccerGame(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.Integer, db.ForeignKey("user.id"))
+    game_time = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return "<SoccerGame {}".format(self.id)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user.id,
+            "game_time": self.game_time
         }
